@@ -45,8 +45,6 @@ const PosterTemplateDesigner: React.FC<PosterTemplateDesignerProps> = ({
 
   // 添加元素
   const addElement = (type: PosterElementType) => {
-    let newElement: PosterElement;
-
     const basePosition = {
       x: 50,
       y: 50,
@@ -54,72 +52,65 @@ const PosterTemplateDesigner: React.FC<PosterTemplateDesignerProps> = ({
       height: 100,
     };
 
-    switch (type) {
-      case 'background':
-        newElement = {
-          id: uuidv4(),
-          type: 'background',
-          position: { x: 0, y: 0, width: currentTemplate.width, height: currentTemplate.height },
-          zIndex: 0,
-          backgroundColor: '#ffffff',
-        } as BackgroundElement;
-        break;
+    let newElement: PosterElement;
 
-      case 'text':
-        newElement = {
-          id: uuidv4(),
-          type: 'text',
-          position: basePosition,
-          zIndex: currentTemplate.elements.length + 1,
-          content: '文本内容',
-          fontStyle: {
-            family: 'Arial, sans-serif',
-            size: 24,
-            weight: 'normal',
-            color: '#000000',
-            lineHeight: 1.5,
-          },
-          align: 'left',
-        } as TextElement;
-        break;
-
-      case 'image':
-        newElement = {
-          id: uuidv4(),
-          type: 'image',
-          position: { ...basePosition, height: 200 },
-          zIndex: currentTemplate.elements.length + 1,
-          src: '',
-          fit: 'cover',
-          borderRadius: 0,
-        } as ImageElement;
-        break;
-
-      case 'tag':
-        newElement = {
-          id: uuidv4(),
-          type: 'tag',
-          position: basePosition,
-          zIndex: currentTemplate.elements.length + 1,
-          tags: ['标签1', '标签2'],
-          tagStyle: {
-            backgroundColor: '#e0e0e0',
-            textColor: '#333333',
-            fontSize: 14,
-            padding: { x: 8, y: 4 },
-            borderRadius: 4,
-            spacing: 8,
-          },
-        } as TagElement;
-        break;
-
-      default:
-        return;
+    if (type === 'background') {
+      newElement = {
+        id: uuidv4(),
+        type: 'background',
+        position: { x: 0, y: 0, width: currentTemplate.width, height: currentTemplate.height },
+        zIndex: 0,
+        backgroundColor: '#ffffff',
+      };
+    } else if (type === 'text') {
+      newElement = {
+        id: uuidv4(),
+        type: 'text',
+        position: basePosition,
+        zIndex: currentTemplate.elements.length + 1,
+        content: '文本内容',
+        fontStyle: {
+          family: 'Arial, sans-serif',
+          size: 24,
+          weight: 'normal',
+          color: '#000000',
+          lineHeight: 1.5,
+        },
+        align: 'left',
+      };
+    } else if (type === 'image') {
+      newElement = {
+        id: uuidv4(),
+        type: 'image',
+        position: { ...basePosition, height: 200 },
+        zIndex: currentTemplate.elements.length + 1,
+        src: '',
+        fit: 'cover',
+        borderRadius: 0,
+      };
+    } else if (type === 'tag') {
+      newElement = {
+        id: uuidv4(),
+        type: 'tag',
+        position: basePosition,
+        zIndex: currentTemplate.elements.length + 1,
+        tags: ['标签1', '标签2'],
+        tagStyle: {
+          backgroundColor: '#e0e0e0',
+          textColor: '#333333',
+          fontSize: 14,
+          padding: { x: 8, y: 4 },
+          borderRadius: 4,
+          spacing: 8,
+        },
+      };
+    } else {
+      return;
     }
 
     setCurrentTemplate({
       ...currentTemplate,
-      elements: [...currentTemplate.elements, newElement],
+      elements: [...currentTemplate.elements, newElement] as PosterElement[],
     });
     setSelectedElement(newElement.id);
   };
@@ -129,7 +120,7 @@ const PosterTemplateDesigner: React.FC<PosterTemplateDesignerProps> = ({
     setCurrentTemplate({
       ...currentTemplate,
       elements: currentTemplate.elements.map((el) =>
-        el.id === elementId ? { ...el, ...updates } : el
+        el.id === elementId ? { ...el, ...updates } as PosterElement : el
       ),
     });
   };

@@ -262,14 +262,14 @@ export const submitBatchApplication = async (
   tableId: string,
   templateId: string,
   data: any
-): Promise<BatchApplyResponse> => {
+): Promise<any> => {
   try {
     // 这是一个占位实现，实际可能不需要这个 API
     console.warn('submitBatchApplication 未实现');
     return {
       success: true,
       message: '批量应用成功',
-    } as BatchApplyResponse;
+    };
   } catch (error) {
     console.error('Error submitting batch application:', error);
     throw error;

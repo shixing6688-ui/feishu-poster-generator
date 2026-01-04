@@ -50,7 +50,24 @@ export const downloadPostersAsZip = async (
 ): Promise<void> => {
   try {
     // 动态导入 JSZip
-    const JSZip = (await import('jszip')).default;
+    let JSZip: any;
+    try {
+      JSZip = (await import('jszip' as any)).default;
+    } catch (e) {
+      console.warn('jszip 未安装，使用顺序下载代替');
+      alert('批量下载功能需要安装 jszip 库。\n将使用顺序下载代替。');
+      // 使用顺序下载代替
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        if (result.success && result.blob) {
+          downloadPoster(result.blob, `poster_${i + 1}.png`);
+          // 添加延迟避免浏览器阻止多个下载
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+      return;
+    }
+
     const zip = new JSZip();
 
     const successResults = results.filter((r) => r.success && r.blob);
@@ -69,11 +86,7 @@ export const downloadPostersAsZip = async (
     downloadPoster(content, zipFilename);
   } catch (error) {
     console.error('生成 ZIP 失败:', error);
-    if (error instanceof Error && error.message.includes('Cannot find module')) {
-      alert('批量下载功能需要安装 jszip 库。\n请运行: npm install jszip');
-    } else {
-      alert('生成 ZIP 文件失败，请重试');
-    }
+    alert('生成 ZIP 文件失败，请重试');
   }
 };
 
